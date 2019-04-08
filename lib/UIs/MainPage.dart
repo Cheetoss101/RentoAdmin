@@ -31,7 +31,12 @@ class _MainPageState extends State<MainPage> {
                     Icons.supervised_user_circle,
                     size: 150,
                     color: Colors.deepOrange[800],
-                  )),
+                  ),
+                    onPressed: ()
+                    {
+                      Navigator.of(context).pushNamed('/');
+                    },
+                  ),
                   Text("User"),
                 Text("Manegment"),
                 SizedBox(height: 5,)

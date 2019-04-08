@@ -4,6 +4,9 @@ import 'package:rentoadmin/UIs/LoginScreen.dart';
 import 'package:rentoadmin/UIs/MainPage.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rentoadmin/api/services.dart';
+import 'UIs/SearchItem.dart';
+import 'UIs/SearchUser.dart';
+
 // 
 void main() async{
   //MapView.setApiKey('AIzaSyBTM7tUit-IU6DS0of0rG89rLcaFX1aiFU');
@@ -28,6 +31,8 @@ class MyAppState extends State<MyApp> {
       routes: <String, WidgetBuilder>{
          '/LoginScreen' : (BuildContext context) => new LoginScreen(),
          '/MainPage' : (BuildContext context) => new MainPage(),
+         '/SearchItem' : (BuildContext context) => new SearchPage2(),
+         '/SearchUser' : (BuildContext context) => new SearchUser(),
       },
     );
   }
