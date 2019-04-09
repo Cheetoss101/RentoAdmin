@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:rentoadmin/api/FirestoreServices.dart';
@@ -25,6 +26,7 @@ class RentItemState extends State<ItemPage> {
   TimeOfDay _ftime = new TimeOfDay.now();
 
   String _sellerID;
+  String _itemID;
   String _name = "Rent Item";
   String _location = "None";
   String _decription = "None";
@@ -33,33 +35,6 @@ class RentItemState extends State<ItemPage> {
   int _price = 0;
   String _path = "";
   int _code = 1000 + Random().nextInt(9999 - 1000);
-
-  Future<Null> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: _date,
-        firstDate: _date,
-        lastDate: new DateTime(2021));
-    if (picked != null) {
-      setState(() {
-        _date = picked;
-        _fdate = picked;
-      });
-    }
-  }
-
-  Future<Null> _selectDate1(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: _fdate,
-        firstDate: _fdate,
-        lastDate: new DateTime(2021));
-    if (picked != null) {
-      setState(() {
-        _fdate = picked;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,50 +80,20 @@ class RentItemState extends State<ItemPage> {
               items: [
                 BottomNavigationBarItem(
                   icon: IconButton(
-                    icon: Icon(Icons.add),
+                      icon: Icon(Icons.highlight_off),
+                      onPressed: () {
+                        _showDialogBan();
+                      }),
+                  title: Text('Ban'),
+                ),
+                BottomNavigationBarItem(
+                  icon: IconButton(
+                    icon: Icon(Icons.insert_emoticon),
                     onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          // return object of type Dialog
-                          return AlertDialog(
-                            title: new Text("Confirm Request"),
-                            content: new Text("Send a request for $_name"),
-                            actions: <Widget>[
-                              new FlatButton(
-                                child: new Text("Confirm"),
-                                onPressed: () {
-                                  FirebaseService.sendRequest(
-                                      buyerID: UserAuth.getEmail(),
-                                      eDate: _fdate.toString(),
-                                      itemID: this.itemID,
-                                      imgUrl: this._path,
-                                      rDate: DateTime.now().toString(),
-                                      sellerID: this._sellerID,
-                                      sDate: _date.toString(),
-                                      state: "Waiting for acceptance",
-                                      name: _name,
-                                      location: _location,
-                                      desc: _decription,
-                                      code: _code.toString());
-                                  Navigator.of(context)
-                                      .pushReplacementNamed('/RentalHistory');
-                                },
-                              ),
-                              // usually buttons at the bottom of the dialog
-                              new FlatButton(
-                                child: new Text("Cancel"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      _showDialogUnban();
                     },
                   ),
-                  title: Text('Rent Now'),
+                  title: Text('UnBan'),
                 ),
               ],
             );
@@ -158,32 +103,7 @@ class RentItemState extends State<ItemPage> {
     );
   }
 
-  Future<Null> _selectTime(BuildContext context) async {
-    final TimeOfDay picked = await showTimePicker(
-      context: context,
-      initialTime: _time,
-    );
-    if (picked != null) {
-      setState(() {
-        _time = picked;
-        _ftime = picked;
-      });
-    }
-  }
-
-  Future<Null> _selectTime1(BuildContext context) async {
-    final TimeOfDay picked = await showTimePicker(
-      context: context,
-      initialTime: _ftime,
-    );
-    if (picked != null) {
-      setState(() {
-        _ftime = picked;
-      });
-    }
-  }
-
-  Widget _buildDetails(BuildContext context, dynamic data) {
+  Widget _buildDetails(BuildContext context, DocumentSnapshot data) {
     this._name = data['name'];
     this._location = data['location'];
     this._decription = data['description'];
@@ -273,7 +193,7 @@ class RentItemState extends State<ItemPage> {
           subtitle: new IconButton(
               icon: new Icon(Icons.date_range),
               onPressed: () {
-                _selectDate(context);
+                //_selectDate(context);
               }),
           trailing: Text('${_date.year}${-_date.month}${-_date.day}'),
         ),
@@ -282,7 +202,7 @@ class RentItemState extends State<ItemPage> {
           subtitle: new IconButton(
               icon: new Icon(Icons.date_range),
               onPressed: () {
-                _selectDate1(context);
+                //_selectDate1(context);
               }),
           trailing: Text('${_fdate.year}${-_fdate.month}${-_fdate.day}'),
         ),
@@ -291,7 +211,7 @@ class RentItemState extends State<ItemPage> {
           subtitle: new IconButton(
               icon: new Icon(Icons.timer),
               onPressed: () {
-                _selectTime(context);
+                //_selectTime(context);
               }),
           trailing: Text('${_time.hour} :${_time.minute}'),
         ),
@@ -300,7 +220,7 @@ class RentItemState extends State<ItemPage> {
           subtitle: new IconButton(
               icon: new Icon(Icons.timer),
               onPressed: () {
-                _selectTime1(context);
+                //_selectTime1(context);
               }),
           trailing: Text('${_ftime.hour} :${_ftime.minute}'),
         ),
@@ -316,6 +236,52 @@ class RentItemState extends State<ItemPage> {
           leading: new Icon(Icons.star),
         ),
       ],
+    );
+  }
+
+  _showDialogBan() async {
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: Text("Are you sure to ban the user"),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('confirm'),
+              onPressed: () {
+                FirebaseService.UpdateBanItem(this.itemID);
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
+  }
+
+  _showDialogUnban() async {
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: Text("Are you sure to unban the user"),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('confirm'),
+              onPressed: () {
+                FirebaseService.UpdateUnbanItem(this.itemID);
+                Navigator.pop(context);
+              })
+        ],
+      ),
     );
   }
 }

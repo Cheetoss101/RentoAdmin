@@ -25,6 +25,7 @@ class ProfileState extends State<OtherProfile> {
   ProfileState(this.profileID);
   double rating;
   String intName, intPhone, intBio, imageURL, email;
+  bool badState;
 
   @override
   Widget build(BuildContext context) {
@@ -115,12 +116,16 @@ class ProfileState extends State<OtherProfile> {
         ));
   }
 
-  _buildWidgets(BuildContext context, dynamic data) {
+  _buildWidgets(BuildContext context, DocumentSnapshot data) {
     this.imageURL = data['photoURL'];
     this.intBio = data['Bio'];
     this.intName = data['name'];
     this.intPhone = data['phone'];
+    this.email = data.documentID;
     dynamic d = data['ProfileRate'];
+    this.badState = data['isBanned'];
+
+
     this.rating = d;
     return Scaffold(
         resizeToAvoidBottomPadding: false,
@@ -133,7 +138,7 @@ class ProfileState extends State<OtherProfile> {
           SizedBox(height: 20.0),
           Column(
             children: <Widget>[
-              //  _buildUserIdentity(intName),
+              _buildUserIdentity(this.intName, this.imageURL),
               Divider(),
               _bibleField(),
               Divider(),
@@ -164,15 +169,40 @@ class ProfileState extends State<OtherProfile> {
 
           Expanded(
             child: StreamBuilder(
-              stream: FirestoreServices.getUserRates(UserAuth.getEmail()),
+              stream: FirestoreServices.getUserRates(this.email),
               builder: (context, snapshot) {
                 return !snapshot.hasData
                     ? CircularProgressIndicator()
                     : buildComments(context, snapshot.data.documents);
               },
             ),
-          )
-        ]));
+          ),
+          BottomNavigationBar(
+          onTap: (int) {},
+          items: [
+            BottomNavigationBarItem(
+              icon: IconButton(
+                  icon: Icon(Icons.highlight_off),
+                  onPressed: () {
+                    _showDialogBan();
+                  }),
+              title: Text('Ban'),
+            ),
+            BottomNavigationBarItem(
+              icon: IconButton(
+                icon: Icon(Icons.insert_emoticon),
+                onPressed: () {
+                  _showDialogUnban();
+                },
+              ),
+              title: Text('UnBan'),
+            ),
+          ],
+        ),
+          SizedBox(height: 5,)
+        ]
+        )
+        );
   }
 
   buildComments(BuildContext context, List<DocumentSnapshot> snapshot) {
@@ -209,6 +239,52 @@ class ProfileState extends State<OtherProfile> {
           style: TextStyle(color: Colors.black54),
         ),
       ]),
+    );
+  }
+
+  _showDialogBan() async {
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: Text("Are you sure to ban the user"),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('confirm'),
+              onPressed: () {
+                FirebaseService.UpdateBanUser(this.email);
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
+  }
+  _showDialogUnban() async {
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: Text("Are you sure to unban the user"),
+        actions: <Widget>[
+
+          new FlatButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('confirm'),
+              onPressed: () {
+                FirebaseService.UpdateUnbanUser(this.email);
+                Navigator.pop(context);
+              })
+        ],
+      ),
     );
   }
 }

@@ -10,6 +10,14 @@ class FirestoreServices {
         .where("name", isGreaterThanOrEqualTo: searchTerm ).getDocuments();
   }
 
+  //SEARCH USER
+  static Future<QuerySnapshot> searchUser(String searchTerm) {
+    return Firestore.instance
+        .collection("Users")
+        .where("name", isGreaterThanOrEqualTo: searchTerm ).getDocuments();
+  }
+
+
   //GET USER'S ITEM LIST
   static Stream<QuerySnapshot> getItemList(){
     return Firestore.instance.collection('Item').where("sellerID", isEqualTo: UserAuth.getEmail()).snapshots();
