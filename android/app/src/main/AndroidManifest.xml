@@ -16,6 +16,9 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="rento_admin"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyBTM7tUit-IU6DS0of0rG89rLcaFX1aiFU"/>
+               
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

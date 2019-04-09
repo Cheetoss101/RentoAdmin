@@ -58,16 +58,17 @@ class FirebaseService {
       }
     ).then((onVal){print("complete");});
   }
+
   static void UpdateRequestState(ReqID,newstate){
     print("entered");
     
     Firestore.instance.collection('Requests').document(ReqID).updateData(
       {
         'State':newstate,
-        
       }
     ).then((onVal){print("complete");});
   }
+
   static void DeleteRequest(ReqID){
     Firestore.instance.collection('Requests').document(ReqID).delete();
   }
@@ -191,6 +192,43 @@ class FirebaseService {
         });
     });
   }
+
+  static void UpdateBanUser(ProfileID){
+    print("entered");
+    Firestore.instance.collection('Users').document(ProfileID).updateData(
+      {
+        'isBanned':true,
+      }
+    ).then((onVal){print("banned");});
+  }
+
+  static void UpdateUnbanUser(ProfileID){
+    print("entered");
+    Firestore.instance.collection('Users').document(ProfileID).updateData(
+      {
+        'isBanned':false,
+      }
+    ).then((onVal){print("unbanned");});
+  }
+
+  //BAN & UNBAN 
+  static void UpdateBanItem(ItemID){
+    print("entered");
+    Firestore.instance.collection('Item').document(ItemID).updateData(
+      {
+        'isBanned':true,
+      }
+    ).then((onVal){print("banned");});
+  }
+
+  static void UpdateUnbanItem(ItemID){
+    print("entered");
+    Firestore.instance.collection('Item').document(ItemID).updateData(
+      {
+        'isBanned':false,
+      }
+    ).then((onVal){print("unbanned");});
+  }
 }
 
 class UserAuth{
@@ -225,5 +263,6 @@ class UserAuth{
   {
     return user.email;
   }
+  
 }
 

@@ -18,9 +18,9 @@ ThemeData appTheme =
     ThemeData(primaryColor: Colors.deepOrange, fontFamily: 'Oxygen');
 
 class SearchPage2 extends StatefulWidget{
-  SearchPage createState() => new SearchPage();
+  _SearchPage2State createState() => new _SearchPage2State();
 }
-class SearchPage extends State<SearchPage2> {
+class _SearchPage2State extends State<SearchPage2> {
   
  @override
   void initState() {
@@ -127,7 +127,7 @@ Widget _buildItems(BuildContext context, List<DocumentSnapshot> snapshots)
 
 
 class FlightListTopPart extends StatelessWidget {
- SearchPage refreach;
+ _SearchPage2State refreach;
  FlightListTopPart(this.refreach);
 
   @override
