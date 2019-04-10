@@ -193,41 +193,38 @@ class FirebaseService {
     });
   }
 
-  static void UpdateBanUser(ProfileID){
-    print("entered");
-    Firestore.instance.collection('Users').document(ProfileID).updateData(
+  static void updateBanUser(String uid)
+  {
+    Firestore.instance.collection('Users').document(uid).updateData({'isBanned':true}).then((value){
+      Firestore.instance.collection('Item').where('SellerID', isEqualTo: uid).getDocuments().then((snapshot)
       {
-        'isBanned':true,
-      }
-    ).then((onVal){print("banned");});
+        snapshot.documents.forEach((doc){
+          updateBanItem(doc.documentID);
+        });
+      });
+    });
   }
 
-  static void UpdateUnbanUser(ProfileID){
-    print("entered");
-    Firestore.instance.collection('Users').document(ProfileID).updateData(
+  static void updateUnbanUser (String uid)
+  {
+    Firestore.instance.collection('Users').document(uid).updateData({'isBanned':false}).then((value){
+      Firestore.instance.collection('Item').where('SellerID', isEqualTo: uid).getDocuments().then((snapshot)
       {
-        'isBanned':false,
-      }
-    ).then((onVal){print("unbanned");});
+        snapshot.documents.forEach((doc){
+          updateUnbanItem(doc.documentID);
+        });
+      });
+    });
   }
 
-  //BAN & UNBAN 
-  static void UpdateBanItem(ItemID){
-    print("entered");
-    Firestore.instance.collection('Item').document(ItemID).updateData(
-      {
-        'isBanned':true,
-      }
-    ).then((onVal){print("banned");});
+  static Future <void> updateBanItem(String itemID)
+  {
+    return Firestore.instance.collection('Item').document(itemID).updateData({'isBanned':true});
   }
 
-  static void UpdateUnbanItem(ItemID){
-    print("entered");
-    Firestore.instance.collection('Item').document(ItemID).updateData(
-      {
-        'isBanned':false,
-      }
-    ).then((onVal){print("unbanned");});
+  static Future <void> updateUnbanItem(String itemID)
+  {
+    return Firestore.instance.collection('Item').document(itemID).updateData({'isBanned':false});
   }
 }
 

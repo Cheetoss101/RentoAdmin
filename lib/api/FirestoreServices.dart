@@ -103,5 +103,10 @@ class FirestoreServices {
         .document(itemID)
         .get();
   }
+
+  static Future <DocumentSnapshot> isAdmin(String uID)
+  {
+    return Firestore.instance.collection('Users').document(uID).get();
+  }
  
 }

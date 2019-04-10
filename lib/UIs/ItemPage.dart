@@ -112,7 +112,7 @@ class RentItemState extends State<ItemPage> {
     this._category = data['category'];
     this._sellerID = data['sellerID'];
     int count = data['RateCount'];
-    double totalRate = data['Rate'];
+    int totalRate = data['Rate'];
     //make sure no divisin by zero happens
     this._rate = count == 0 ? 0 : totalRate / count;
     //rate calculation end
@@ -254,7 +254,7 @@ class RentItemState extends State<ItemPage> {
           new FlatButton(
               child: const Text('confirm'),
               onPressed: () {
-                FirebaseService.UpdateBanItem(this.itemID);
+                FirebaseService.updateBanItem(this.itemID);
                 Navigator.pop(context);
               })
         ],
@@ -277,7 +277,7 @@ class RentItemState extends State<ItemPage> {
           new FlatButton(
               child: const Text('confirm'),
               onPressed: () {
-                FirebaseService.UpdateUnbanItem(this.itemID);
+                FirebaseService.updateUnbanItem(this.itemID);
                 Navigator.pop(context);
               })
         ],

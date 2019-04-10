@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rentoadmin/api/FirestoreServices.dart';
 import 'MainPage.dart';
 
-class LoginScreen extends StatefulWidget
-{
+class LoginScreen extends StatefulWidget {
   LoginState createState() => LoginState();
 }
 
-class LoginState extends State <LoginScreen>
-{
+class LoginState extends State<LoginScreen> {
   final formKey = new GlobalKey<FormState>();
   String email, password;
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return LoginPage(context);
   }
 
-  
-  
-  
   Widget LoginPage(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -198,18 +193,25 @@ class LoginState extends State <LoginScreen>
                                 .then((FirebaseUser user) {
                               print("success TO LOGIN");
                               //FirebaseAuth.instance.signOut();
-                             Navigator.of(context)..pushReplacement(
-                                    MaterialPageRoute(builder: (context)=>MainPage()));
+                              FirestoreServices.isAdmin(email)
+                                  .then((snapshot) {
+                                if (!snapshot.data['isAdmin']) {
+                                  FirebaseAuth.instance.signOut();
+                                } else
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) => MainPage()));
+                              });
                             }).catchError((e) {
                               print("fail TO LOGIN");
                               print('Error: $e');
                               dialogTriggerEP(context);
-                              final snackBar = 
-                                new SnackBar(
-                                  content:
-                                      new Text('Incorrect Email or Password'),
-                                );
-                              setState(){Scaffold.of(context).showSnackBar(snackBar);
+                              final snackBar = new SnackBar(
+                                content:
+                                    new Text('Incorrect Email or Password'),
+                              );
+                              setState() {
+                                Scaffold.of(context).showSnackBar(snackBar);
                               }
                             });
                           }
@@ -256,7 +258,7 @@ class LoginState extends State <LoginScreen>
     return false;
   }
 
-    Future<void> dialogTriggerRP(BuildContext context) async {
+  Future<void> dialogTriggerRP(BuildContext context) async {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -264,7 +266,7 @@ class LoginState extends State <LoginScreen>
         });
   }
 
-    Widget ResetPassword() {
+  Widget ResetPassword() {
     final key = new GlobalKey<FormState>();
     return Form(
       key: key,
@@ -317,16 +319,15 @@ class LoginState extends State <LoginScreen>
     );
   }
 
-    Future<void> dialogTriggerEP(BuildContext context) async {
-    return await showDialog <String>
-    (
+  Future<void> dialogTriggerEP(BuildContext context) async {
+    return await showDialog<String>(
         context: context,
         builder: (BuildContext context) {
           return wrongEmailorPass();
         });
   }
 
-    Widget wrongEmailorPass() {
+  Widget wrongEmailorPass() {
     return AlertDialog(
       title: Text('Wrong Email or Password'),
       actions: <Widget>[
@@ -337,6 +338,4 @@ class LoginState extends State <LoginScreen>
       ],
     );
   }
-
-
 }
