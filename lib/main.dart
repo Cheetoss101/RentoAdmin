@@ -24,7 +24,7 @@ class MyAppState extends State<MyApp> {
       theme: ThemeData( 
         primaryColor:  Colors.deepOrange[800]
       ),
-      home: MainPage(),
+      home: LoginScreen(),
       routes: <String, WidgetBuilder>{
          '/LoginScreen' : (BuildContext context) => new LoginScreen(),
          '/MainPage' : (BuildContext context) => new MainPage(),

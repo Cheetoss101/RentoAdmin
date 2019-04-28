@@ -257,7 +257,7 @@ class ProfileState extends State<OtherProfile> {
           new FlatButton(
               child: const Text('confirm'),
               onPressed: () {
-                FirebaseService.UpdateBanUser(this.email);
+                FirebaseService.updateBanUser(this.email);
                 Navigator.pop(context);
               })
         ],
@@ -280,7 +280,7 @@ class ProfileState extends State<OtherProfile> {
           new FlatButton(
               child: const Text('confirm'),
               onPressed: () {
-                FirebaseService.UpdateUnbanUser(this.email);
+                FirebaseService.updateUnbanUser(this.email);
                 Navigator.pop(context);
               })
         ],

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rentoadmin/UIs/SearchItem.dart';
 import 'package:rentoadmin/UIs/SearchUser.dart';
@@ -11,6 +12,10 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(elevation: 0, title: Text("Main Page"),),
+      drawer: IconButton(
+        onPressed: () => FirebaseAuth.instance.signOut(),
+        icon: Icon(Icons.power_settings_new),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
