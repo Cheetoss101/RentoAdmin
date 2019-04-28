@@ -197,6 +197,7 @@ class LoginState extends State<LoginScreen> {
                                   .then((snapshot) {
                                 if (!snapshot.data['isAdmin']) {
                                   FirebaseAuth.instance.signOut();
+                                  dialogTriggerEP(context);
                                 } else
                                   Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(

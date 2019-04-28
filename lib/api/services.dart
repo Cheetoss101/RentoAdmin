@@ -145,6 +145,7 @@ class FirebaseService {
     for(int i = 0; i<data.length; i++)
       Firestore.instance.collection("Item").document(id.documentID).collection('photos').add({'photoURL':data[i]});
   }
+  
  /* static Future <void> createOffer2(id)
   {
       
@@ -196,7 +197,7 @@ class FirebaseService {
   static void updateBanUser(String uid)
   {
     Firestore.instance.collection('Users').document(uid).updateData({'isBanned':true}).then((value){
-      Firestore.instance.collection('Item').where('SellerID', isEqualTo: uid).getDocuments().then((snapshot)
+      Firestore.instance.collection('Item').where('sellerID', isEqualTo: uid).getDocuments().then((snapshot)
       {
         snapshot.documents.forEach((doc){
           updateBanItem(doc.documentID);
@@ -208,7 +209,7 @@ class FirebaseService {
   static void updateUnbanUser (String uid)
   {
     Firestore.instance.collection('Users').document(uid).updateData({'isBanned':false}).then((value){
-      Firestore.instance.collection('Item').where('SellerID', isEqualTo: uid).getDocuments().then((snapshot)
+      Firestore.instance.collection('Item').where('sellerID', isEqualTo: uid).getDocuments().then((snapshot)
       {
         snapshot.documents.forEach((doc){
           updateUnbanItem(doc.documentID);
@@ -217,14 +218,14 @@ class FirebaseService {
     });
   }
 
-  static Future <void> updateBanItem(String itemID)
+  static  void updateBanItem(String itemID)
   {
-    return Firestore.instance.collection('Item').document(itemID).updateData({'isBanned':true});
+     Firestore.instance.collection('Item').document(itemID).updateData({'isBanned':true});
   }
 
-  static Future <void> updateUnbanItem(String itemID)
+  static  void updateUnbanItem(String itemID)
   {
-    return Firestore.instance.collection('Item').document(itemID).updateData({'isBanned':false});
+   Firestore.instance.collection('Item').document(itemID).updateData({'isBanned':false});
   }
 }
 
